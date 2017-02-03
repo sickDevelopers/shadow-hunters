@@ -8,6 +8,7 @@ import './main.html';
 
 Template.game.onCreated(function gameOnCreated() {
 
+
     let x = 640;
     let y = 400;
 

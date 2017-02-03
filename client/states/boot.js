@@ -24,6 +24,7 @@ const BootState = {
 
         // Create a group for our tiles.
         this.landGroup = this.game.add.group();
+        this.landEventsGroup = this.game.add.group();
         this.heroesGroup = this.game.add.group();
 
         // Provide a 3D position for the cursor
@@ -83,38 +84,6 @@ const BootState = {
                 let xx = this.tileEdge * x;
                 let yy = this.tileEdge * y;
                 let sprite = this.game.add.isoSprite(xx, yy, 0, 'land_1', 0, this.landGroup);
-                sprite.inputEnabled = true;
-
-                sprite.events.onInputDown.add(s => {
-                    var hasHero = _.find(this.heroes, h => {
-                        return h.position.x === x && h.position.y === y;
-                    });
-                    if (hasHero) {
-
-                        console.log('found something');
-                    } else {
-                        if (this.selected) {
-
-                            let pathDistance = this.findDistance(
-                                [this.selected.position.x, this.selected.position.y], [x, y]
-                                );
-
-                            if (pathDistance <= this.selected.movement) {
-                                console.log('move to ', x, y);
-                                let isoX = x * this.tileEdge;
-                                let isoY = y * this.tileEdge;
-                                this.game.add.tween(this.selected.sprite).to({ isoX, isoY, isoZ: 0 }, 400, Phaser.Easing.Quadratic.InOut, true);
-                                this.selected.position.x = x;
-                                this.selected.position.y = y;
-                            } else {
-                                console.log('cannot reach');
-                            }
-
-                        }
-                    }
-
-                });
-
                 sprite.anchor.set(0.5, 0);
 
                 this.worldMatrix[x][y] = new LandTile({
@@ -128,9 +97,14 @@ const BootState = {
             }
         }
 
+        let inputSprite = this.game.add.isoSprite(0, 0, 0, 'asdadsdasdas', 0, this.landGroup);
+        inputSprite.anchor.set(0.5, 0);
+
     },
 
     update() {
+
+        this.game.debug.inputInfo(32, 32);
         // Update the cursor position.
         // It's important to understand that screen-to-isometric projection means you have to specify a z position manually, as this cannot be easily
         // determined from the 2D pointer position without extra trickery. By default, the z position is 0 if not set.
@@ -150,18 +124,19 @@ const BootState = {
                 else if (tile.sprite.selected && !inBounds) {
                     tile.sprite.selected = false;
 
-                    if (this.selected) {
-                        let pos1 = [this.selected.position.x, this.selected.position.y];
-                        let pos2 = [tile.indexX, tile.indexY];
-                        let distance = this.findDistance(pos1, pos2);
-                        if (distance < this.selected.movement) {
-                            tile.sprite.tint = 0xff00ff;
-                        } else {
-                            tile.sprite.tint = 0xffffff;    
-                        }
-                    } else {
+                    // if (this.selected) {
+                    //     let pos1 = [this.selected.position.x, this.selected.position.y];
+                    //     let pos2 = [tile.indexX, tile.indexY];
+                    //     let distance = this.findDistance(pos1, pos2);
+                    //     if (distance < this.selected.movement) {
+                    //         tile.sprite.tint = 0xff00ff;
+                    //     } else {
+                    //         tile.sprite.tint = 0xffffff;
+                    //     }
+                    // } else {
                         tile.sprite.tint = 0xffffff;
-                    }
+                    // }
+
 
                     // this.game.add.tween(tile.sprite).to({ isoZ: 0 }, 200, Phaser.Easing.Quadratic.InOut, true);
                 }
@@ -193,6 +168,9 @@ const BootState = {
             let tile = this.game.add.isoSprite(this.tileEdge * hero.position.x, this.tileEdge * hero.position.y, 0, hero.tile, 0, this.heroesGroup);
             tile.hero = hero;
             tile.inputEnabled = true;
+            tile.input.pixelPerfectOver = true;
+
+
             tile.events.onInputDown.add(s => {
 
                 // se è già stato selezionato qualcosa
@@ -206,15 +184,15 @@ const BootState = {
                         console.log('deselect');
 
                         // scorro la matrice e coloro di rosso i punti raggiungibili
-                        this.worldMatrix.forEach((row, x) => {
-                            row.forEach((tile, y) => {
-                                let pos1 = [tile.indexX, tile.indexY];
-                                let distance = this.findDistance(pos1, [this.selected.position.x, this.selected.position.y]);
-                                if (distance < this.selected.range) {
-                                    tile.sprite.tint = 0xffffff;
-                                }
-                            });
-                        });
+                        // this.worldMatrix.forEach((row, x) => {
+                        //     row.forEach((tile, y) => {
+                        //         let pos1 = [tile.indexX, tile.indexY];
+                        //         let distance = this.findDistance(pos1, [this.selected.position.x, this.selected.position.y]);
+                        //         if (distance < this.selected.range) {
+                        //             tile.sprite.tint = 0xffffff;
+                        //         }
+                        //     });
+                        // });
 
                         this.selected = undefined;
                         return;
@@ -228,15 +206,15 @@ const BootState = {
                 this.game.add.tween(s.hero.sprite).to({ isoZ: 4 }, 200, Phaser.Easing.Quadratic.InOut, true);
 
                 // scorro la matrice e coloro di rosso i punti raggiungibili
-                this.worldMatrix.forEach((row, x) => {
-                    row.forEach((tile, y) => {
-                        let pos1 = [tile.indexX, tile.indexY];
-                        let distance = this.findDistance(pos1, [this.selected.position.x, this.selected.position.y]);
-                        if (distance < this.selected.movement) {
-                            tile.sprite.tint = 0xff00ff;
-                        }
-                    });
-                });
+                // this.worldMatrix.forEach((row, x) => {
+                //     row.forEach((tile, y) => {
+                //         let pos1 = [tile.indexX, tile.indexY];
+                //         let distance = this.findDistance(pos1, [this.selected.position.x, this.selected.position.y]);
+                //         if (distance < this.selected.movement) {
+                //             tile.sprite.tint = 0xff00ff;
+                //         }
+                //     });
+                // });
 
             });
 
