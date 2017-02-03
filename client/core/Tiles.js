@@ -3,11 +3,15 @@ import { _ } from 'lodash';
 export class LandTile {
 
     constructor(args) {
+        
         if (!args) {
+            args = {};
             this.type = 'random';
         }
 
-        this.path = LandTile.LAND_PATHS[Object.keys(LandTile.LAND_PATHS)[_.random(Object.keys(LandTile.LAND_PATHS).length -1 )]];
+        Object.assign(this, args);
+
+        this.path = LandTile.LAND_PATHS[Object.keys(LandTile.LAND_PATHS)[_.random(Object.keys(LandTile.LAND_PATHS).length - 1)]];
     }
 
 }
