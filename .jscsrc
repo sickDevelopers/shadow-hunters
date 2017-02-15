@@ -1,6 +1,7 @@
 {
     "preset": "google",
     "fileExtensions": [".js", "jscs"],
+    "requireCamelCaseOrUpperCaseIdentifiers": "ignoreProperties",
 
     "requireSemicolons": true,
     "requireParenthesesAroundIIFE": true,

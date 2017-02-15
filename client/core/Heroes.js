@@ -15,3 +15,4 @@ export class Wizard extends Hero {
 
 Hero.TILE_PATHS = {};
 Hero.TILE_PATHS.WIZARD_1 = 'wizard_1';
+Hero.TILE_PATHS.WARRIOR_1 = 'warrior_1';

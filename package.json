@@ -6,8 +6,11 @@
   },
   "dependencies": {
     "babel-runtime": "^6.22.0",
+    "browser-cookies": "^1.1.0",
     "lodash": "^4.17.4",
     "meteor-node-stubs": "~0.2.0",
-    "phaser-plugin-isometric": "git+https://git@github.com/lewster32/phaser-plugin-isometric.git"
+    "moment": "^2.17.1",
+    "phaser-plugin-isometric": "git+https://git@github.com/lewster32/phaser-plugin-isometric.git",
+    "uuid": "^3.0.1"
   }
 }
